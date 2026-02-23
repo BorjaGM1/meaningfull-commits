@@ -145,10 +145,20 @@
         .corner--bl { bottom: 20px; left: 20px; border-bottom-width: 2px; border-left-width: 2px; }
         .corner--br { bottom: 20px; right: 20px; border-bottom-width: 2px; border-right-width: 2px; }
 
+        .github-link {
+            position: fixed;
+            top: 22px;
+            right: 24px;
+            color: rgba(255, 255, 255, 0.3);
+            transition: color 0.2s;
+            z-index: 50;
+        }
+        .github-link:hover { color: var(--accent); }
+
         .status {
             position: fixed;
             top: 24px;
-            right: 72px;
+            right: 56px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -218,13 +228,13 @@
     <div class="container">
         <div class="label">The Number Is Now</div>
         <div class="number-wrapper">
-            <span id="number">787</span>
+            <span id="number">788</span>
         </div>
         <div class="meta">
-            <div class="meta-line">TOTAL COMMITS: <span id="commits">787</span></div>
+            <div class="meta-line">TOTAL COMMITS: <span id="commits">788</span></div>
             <div class="meta-line">LINES OF MEANINGFUL CODE: <span>0</span></div>
             <div class="meta-line">PROBLEMS SOLVED: <span>0</span></div>
-            <div class="commit-msg">last commit: "🔥 THE NUMBER IS NOW <span id="last-num">787</span>"</div>
+            <div class="commit-msg">last commit: "🔥 THE NUMBER IS NOW <span id="last-num">788</span>"</div>
         </div>
     </div>
 
