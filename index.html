@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE NUMBER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0a0a;
+            --text: #e8e8e8;
+            --accent: #ff3d00;
+            --accent-glow: rgba(255, 61, 0, 0.4);
+            --subtle: #333;
+            --terminal: #33ff66;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,61,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,61,0,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .label {
+            font-size: 0.85rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeDown 0.8s ease forwards 0.2s;
+        }
+
+        .number-wrapper {
+            position: relative;
+            padding: 0 2rem;
+        }
+
+        .number-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        #number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(8rem, 25vw, 20rem);
+            line-height: 1;
+            color: var(--text);
+            text-shadow:
+                0 0 40px var(--accent-glow),
+                0 0 80px rgba(255, 61, 0, 0.15);
+            opacity: 0;
+            animation: countReveal 1s ease forwards 0.5s;
+        }
+
+        .meta {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 1s;
+        }
+
+        .meta-line {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--terminal);
+            text-shadow: 0 0 8px rgba(51, 255, 102, 0.6), 0 0 20px rgba(51, 255, 102, 0.15);
+            opacity: 0.8;
+        }
+
+        .meta-line span { color: var(--accent); }
+
+        .commit-msg {
+            font-size: 0.65rem;
+            color: rgba(51, 255, 102, 0.65);
+            letter-spacing: 0.15em;
+            margin-top: 0.5rem;
+            font-style: italic;
+            text-shadow: 0 0 6px rgba(51, 255, 102, 0.4);
+        }
+
+        .corner {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border-color: var(--accent);
+            border-style: solid;
+            border-width: 0;
+            opacity: 0.3;
+        }
+        .corner--tl { top: 20px; left: 20px; border-top-width: 2px; border-left-width: 2px; }
+        .corner--tr { top: 20px; right: 20px; border-top-width: 2px; border-right-width: 2px; }
+        .corner--bl { bottom: 20px; left: 20px; border-bottom-width: 2px; border-left-width: 2px; }
+        .corner--br { bottom: 20px; right: 20px; border-bottom-width: 2px; border-right-width: 2px; }
+
+        .status {
+            position: fixed;
+            top: 24px;
+            right: 72px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--terminal);
+            text-shadow: 0 0 8px rgba(51, 255, 102, 0.6);
+            z-index: 50;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--terminal);
+            border-radius: 50%;
+            animation: blink 2s ease infinite;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 24px;
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.3);
+            text-shadow: none;
+            text-transform: uppercase;
+            z-index: 50;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes countReveal {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="corner corner--tl"></div>
+    <div class="corner corner--tr"></div>
+    <div class="corner corner--bl"></div>
+    <div class="corner corner--br"></div>
+
+    <div class="status">
+        <div class="status-dot"></div>
+        GRINDING
+    </div>
+
+    <div class="container">
+        <div class="label">The Number Is Now</div>
+        <div class="number-wrapper">
+            <span id="number">0</span>
+        </div>
+        <div class="meta">
+            <div class="meta-line">TOTAL COMMITS: <span id="commits">0</span></div>
+            <div class="meta-line">LINES OF MEANINGFUL CODE: <span>0</span></div>
+            <div class="meta-line">PROBLEMS SOLVED: <span>0</span></div>
+            <div class="commit-msg">last commit: "🔥 THE NUMBER IS NOW <span id="last-num">0</span>"</div>
+        </div>
+    </div>
+
+    <div class="footer">productivity at its finest</div>
+</body>
+</html>
